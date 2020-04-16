@@ -1,0 +1,13 @@
+{
+  "requirements": {
+    "python": "2.7.11"
+  },
+  "commands": [
+    {
+      "name": "cac",
+      "aliases": ["cac"],
+      "version": "0.1.1",
+      "description": "An Akamai CLI package for Client Access Control"
+    }
+  ]
+}
