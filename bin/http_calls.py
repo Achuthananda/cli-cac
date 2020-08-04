@@ -19,7 +19,7 @@ import os
 import requests
 import logging
 import json
-from akamai.edgegrid import EdgeGridAuth
+from akamai.edgegrid import EdgeGridAuth, EdgeRc
 from config import EdgeGridConfig
 if sys.version_info[0] >= 3:
     # python3

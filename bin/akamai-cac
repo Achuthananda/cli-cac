@@ -160,6 +160,7 @@ def formatOutputConfig(config, output_type):
 
 def main():
     """ Processes the right command (list-configs, get-configs, acknowledge-cidrs) """
+    print("Hello")
     if config.command == "list-configurations":
         # Get the list of policies in JSON format for the given network
         configList = listConfigs()
