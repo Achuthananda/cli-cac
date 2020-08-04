@@ -52,12 +52,13 @@ class EdgeGridConfig():
         acknowledge_parser = subparsers.add_parser("acknowledge-cidr", help="Acknowledge CIDR")
         acknowledge_parser.add_argument('config_id', help="Config id to Acknowledge", action='store')
         acknowledge_parser.add_argument('version_id', help="Version id to Acknowledge", action='store')
+        acknowledge_parser.add_argument('--output-type', '-t', default='text', choices=['json', 'text'],metavar='json/text', help=' Output type {json, text}. Default is text')
 
         parser.add_argument('--verbose', '-v',default=False, action='count', help=' Verbose mode')
         parser.add_argument('--debug', '-d', default=False, action='count', help=' Debug mode (prints HTTP headers)')
         parser.add_argument('--edgerc', '-e', default='~/.edgerc', metavar='credentials_file', help=' Location of the credentials file (default is ~/.edgerc)')
         parser.add_argument('--section', '-c', default='cac', metavar='credentials_file_section', action='store', help=' Credentials file Section\'s name to use')
-
+        parser.add_argument('--accountSwitchKey', '-a', metavar='Account Switch Key', action='store', help=' Switch key to different account')
 
         if flags:
             for argument in flags.keys():

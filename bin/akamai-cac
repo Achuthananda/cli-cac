@@ -85,32 +85,41 @@ session.headers.update({'User-Agent': "AkamaiCLI"})
 baseurl_prd = '%s://%s/' % ('https', config.host)
 prdHttpCaller = EdgeGridHttpCaller(session, debug, verbose, baseurl_prd)
 
-def listConfigs():
+def listConfigs(accountSwitchKey=None):
     """ List the CAC Configurations on a given network """
 
-    #Temp code
-    params = {'accountSwitchKey':'1-X06DH9'}
-    configlist = prdHttpCaller.getResult("/client-access-control/v1/configurations",params)
+    if accountSwitchKey:
+        params = {'accountSwitchKey':accountSwitchKey}
+        configlist = prdHttpCaller.getResult("/client-access-control/v1/configurations",params)
+    else:
+        configlist = prdHttpCaller.getResult("/client-access-control/v1/configurations")
     return(configlist)
 
 
-def getConfig(config_id):
+def getConfig(config_id,accountSwitchKey=None):
     """ Gets a specific policy on a given network in JSON format """
 
     print("Retrieving: " + config_id )
-    #Temp code
-    params = {'accountSwitchKey':'1-X06DH9'}
-    configdetail = prdHttpCaller.getResult("/client-access-control/v1/configurations/"
+    if accountSwitchKey:
+        params = {'accountSwitchKey':accountSwitchKey}
+        configdetail = prdHttpCaller.getResult("/client-access-control/v1/configurations/"
                                                + config_id,params)
+    else:
+        configdetail = prdHttpCaller.getResult("/client-access-control/v1/configurations/")
+
     return(configdetail)
 
-def acknowledgeCidr(config_id,version_id):
+def acknowledgeCidr(config_id,version_id,accountSwitchKey=None):
     """ Acknowledges CIDR for a specific version of CAC Config"""
     data = {}
-    #Temp code
-    #params = {'accountSwitchKey':accountSwitchKey}
-    ackdetail = prdHttpCaller.putResult("/client-access-control/v1/configurations/"
+    if accountSwitchKey:
+        params = {'accountSwitchKey':accountSwitchKey}
+        ackdetail = prdHttpCaller.putResult("/client-access-control/v1/configurations/"
                                                + config_id+"/acknowledge/"+version_id,data,params)
+    else:
+        ackdetail = prdHttpCaller.putResult("/client-access-control/v1/configurations/"
+                                               + config_id+"/acknowledge/"+version_id,data)
+
     return(ackdetail)
 
 
@@ -160,14 +169,19 @@ def formatOutputConfig(config, output_type):
 
 def main():
     """ Processes the right command (list-configs, get-configs, acknowledge-cidrs) """
-    print("Hello")
     if config.command == "list-configurations":
         # Get the list of policies in JSON format for the given network
-        configList = listConfigs()
+        if hasattr(config, 'accountSwitchKey'):
+            configList = listConfigs(config.accountSwitchKey)
+        else:
+            configList = listConfigs()
         formatOutputConfigList(configList, config.output_type)
 
     elif config.command == "get-configuration":
-        configDetail = getConfig(config.id)
+        if hasattr(config, 'accountSwitchKey'):
+            configDetail = getConfig(config.id,config.accountSwitchKey)
+        else:
+            configDetail = getConfig(config.id)
 
         if hasattr(config, 'output_file') and config.output_file is not None:
             config.output_file.write(json.dumps(configDetail, indent=2))
