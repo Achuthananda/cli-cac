@@ -193,14 +193,14 @@ def main():
         #Please ask for acknowledgement.
         i = 1
         while i < 2:
-            decision = input("Are you sure you want to acknolwedge the cidr [yes/no]:")
-            if decision == "yes" or decision == 'y':
-                print("Now Acknowleding the CIDR block")
+            decision = input("Are you sure:[Y/N]")
+            if decision == "yes" or decision == 'y' or decision == 'Y':
+                print("Attempting to Acknowlede the CIDR block.........")
                 ackdetail = acknowledgeCidr(config.config_id,config.version_id)
                 if ackdetail['status'] == 200:
                     print('Successfully Acknowledged')
                 else:
-                    print('There is a failure in acknowledging.')
+                    print('There is a failure in acknowledging and status code is ',ackdetail['status'])
                 break
             elif decision == 'no' or decision == 'n':
                 print("Aborting the acknowledgement")

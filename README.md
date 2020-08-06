@@ -283,7 +283,7 @@ optional arguments:
 This command is used to acknowlege a CIDR Block.
 ```
 $akamai cac --section default acknowledge-cidr 4240 1
-Are you sure you want to acknolwedge the cidr [yes/no]:yes
-Now Acknowleding the CIDR block
+Are you sure:[Y/N]Y
+Attempting to Acknowlede the CIDR block.........
 Successfully Acknowledged
 ```
