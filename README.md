@@ -11,7 +11,7 @@ Please ensure your API client has access to the "Client Access Control" API (you
 To install, use [Akamai CLI](https://github.com/akamai/cli):
 
 ```
-akamai install https://github.com/Achuthananda/cli-cac.git
+$akamai install https://github.com/Achuthananda/cli-cac.git
 ```
 
 You may also use this as a stand-alone command by cloning this repository
