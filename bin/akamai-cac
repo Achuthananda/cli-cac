@@ -16,9 +16,7 @@
  limitations under the License.
 
  ****************************************************************
- * Image Manager CLI module by Javier Garza (jgarza@akamai.com) *
- * Based on https://github.com/brassic-lint/cli-imgman          *
- *       from Gareth Hughes                                     *
+ *  CAC CLI module by Achuthananda M P (apadmana@akamai.com) *
  ****************************************************************
 
 """
