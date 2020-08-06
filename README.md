@@ -11,7 +11,7 @@ Please ensure your API client has access to the "Client Access Control" API (you
 To install, use [Akamai CLI](https://github.com/akamai/cli):
 
 ```
-akamai install cac
+akamai install https://github.com/Achuthananda/cli-cac.git
 ```
 
 You may also use this as a stand-alone command by cloning this repository
@@ -20,7 +20,7 @@ and compiling it yourself.
 ## Usage
 
 ```
-akamai cac [global flags] --policy-set POLICY-SET command
+akamai cac [global flags] Commands
 ```
 
 ## Global Flags
@@ -42,16 +42,45 @@ Required arguments:
 
 ## Examples
 
-### Listing
-
-#### list Help
-
-Showing the syntax
+#### Help
+This displays the usage of CAC akamai CLI.
 ```
-$ akamai cac --section default list-configurations --help
+$akamai cac --help
+usage: akamai-cac [-h] [--verbose] [--debug] [--edgerc credentials_file]
+                  [--section credentials_file_section]
+                  [--accountSwitchKey Account Switch Key]
+                  {list-configurations,get-configuration,acknowledge-cidr} ...
 
-usage: akamai-image-manager list-policies [-h] [--network network]
-                           [--output-type json/text]
+Process command line options.
+
+positional arguments:
+  {list-configurations,get-configuration,acknowledge-cidr}
+                        commands
+    list-configurations
+                        List all Configurations
+    get-configuration   Gets a specific configuration
+    acknowledge-cidr    Acknowledge CIDR
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --verbose, -v         Verbose mode
+  --debug, -d           Debug mode (prints HTTP headers)
+  --edgerc credentials_file, -e credentials_file
+                        Location of the credentials file (default is
+                        ~/.edgerc)
+  --section credentials_file_section, -c credentials_file_section
+                        Credentials file Section's name to use
+  --accountSwitchKey Account Switch Key, -a Account Switch Key
+                        Switch key to different account
+
+```
+#### Usage of list-configurations Command
+This shows how to use list-configurations.
+```
+$ akamai cac list-configurations -h
+          [or]
+$ akamai cac list-configurations --help
+usage: akamai-cac list-configurations [-h] [--output-type json/text]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -59,204 +88,202 @@ optional arguments:
                         Output type {json, text}. Default is text
 ```
 
-#### List of all policies (default is both networks and text output)
-Retrieve a list of all policies in human readable format using a specific instance of the Image Manager behavior available on both networks:
 
+#### List All the CAC Configurations
+This shows all the CAC Configurations in the Account.
 ```
-$ akamai image-manager --section default --policy-set example_com list-policies
-
-Policy: example_com 	Network: both 	Output: text
-
-STAGING:
-+--------------------------------+---------------------------+---------------------------+
-|          Policy name           |       Date Created        |           User            |
-+================================+===========================+===========================+
-|             .auto              | 2018-04-19 18:18:13+0000  |          system           |
-+--------------------------------+---------------------------+---------------------------+
-|           HeroBanner           | 2018-09-03 17:42:32+0000  |     42uzkarfjv4pzsdf      |
-+--------------------------------+---------------------------+---------------------------+
-|         AvatarThumbnail        | 2018-04-19 19:50:51+0000  |     42uzkarfjv4pzsdf      |
-+--------------------------------+---------------------------+---------------------------+
-
-PRODUCTION:
-+--------------------------------+---------------------------+---------------------------+
-|          Policy name           |       Date Created        |           User            |
-+================================+===========================+===========================+
-|             .auto              | 2018-04-19 19:43:05+0000  |          system           |
-+--------------------------------+---------------------------+---------------------------+
-|           HeroBanner           | 2018-09-03 17:42:38+0000  |     42uzkarfjv4pzsdf      |
-+--------------------------------+---------------------------+---------------------------+
-|         AvatarThumbnail        | 2018-04-19 21:11:38+0000  |     42uzkarfjv4pzsdf      |
-+--------------------------------+---------------------------+---------------------------+
+$ akamai cac --section default list-configurations
++--------------------------------+---------------------------+-------------------------------------+
+|          Config Name           |         Config Id         |             Description             |
++================================+===========================+=====================================+
+|         TestAchuth-CAC         |           4240            |              Test Cac               |
++--------------------------------+---------------------------+-------------------------------------+
+| jaytest_crlstatic.symclab.com. |           1192            |    Test config for symantec crl     |
+|              xml               |                           |                                     |
++--------------------------------+---------------------------+-------------------------------------+
 ```
 
-The commands below accomplish the same as the previous one:
+#### List All the CAC Configurations in Json Format
+This shows all the CAC Configurations in the Account in Json Format.
+```
+$ akamai cac --section default list-configurations --output-type json
+[
+  {
+    "configurationId": 4240,
+    "name": "TestAchuth-CAC",
+    "description": "Test Cac",
+    "currentCidrs": {
+      "cidrs": [
+        "0.0.0.0/0"
+      ],
+      "acknowledgeDate": "2020-08-04T14:04:37+0000",
+      "version": 0
+    },
+    "proposedCidrs": []
+  },
+  {
+    "configurationId": 1192,
+    "name": "jaytest_crlstatic.symclab.com.xml",
+    "description": "Test config for symantec crl",
+    "currentCidrs": null,
+    "proposedCidrs": []
+  }
+]
+```
+
+#### List of all CAC Configurations with verbose mode.
+Retrieve a list of all CAC configurations along with verbose mode
+```
+$ akamai cac --section default --verbose list-configurations
+
+>>>
+[
+  {
+    "configurationId": 4240,
+    "name": "TestAchuth-CAC",
+    "description": "Test Cac",
+    "currentCidrs": {
+      "cidrs": [
+        "0.0.0.0/0"
+      ],
+      "acknowledgeDate": "2020-08-04T14:04:37+0000",
+      "version": 0
+    },
+    "proposedCidrs": []
+  },
+  {
+    "configurationId": 1192,
+    "name": "jaytest_crlstatic.symclab.com.xml",
+    "description": "Test config for symantec crl",
+    "currentCidrs": null,
+    "proposedCidrs": []
+  }
+]
+<<<
+
+LOG: GET /client-access-control/v1/configurations 200 application/json;charset=UTF-8
++--------------------------------+---------------------------+-------------------------------------+
+|          Config Name           |         Config Id         |             Description             |
++================================+===========================+=====================================+
+|         TestAchuth-CAC         |           4240            |              Test Cac               |
++--------------------------------+---------------------------+-------------------------------------+
+| jaytest_crlstatic.symclab.com. |           1192            |    Test config for symantec crl     |
+|              xml               |                           |                                     |
++--------------------------------+---------------------------+-------------------------------------+
+```
+
+#### List of all CAC Configurations with debug mode.
+This command displays list of the CAC configurations in debug mode which prints the HTTP headers.
+```
+$ akamai cac --section default --debug list-configurations
+
+DEBUG:akamai.edgegrid.edgegrid:unsigned authorization header: EG1-HMAC-SHA256 client_token=akab-7akt7o5towbbkhzs-rlzj3dxkhvon6vwt;access_token=akab-7ea2zqjjsq726chb-4lcohffx5lcedzsl;timestamp=20200806T06:23:07+0000;nonce=c92f299c-819d-4b70-bf32-f220d238efe2;
+DEBUG:akamai.edgegrid.edgegrid:body is ''
+DEBUG:akamai.edgegrid.edgegrid:content hash is ''
+DEBUG:akamai.edgegrid.edgegrid:data to sign: GET\thttps\takab-dtekh7br4mq2ao5i-rawi2krrlwirkvpa.luna.akamaiapis.net\t/client-access-control/v1/configurations\t\t\tEG1-HMAC-SHA256 client_token=akab-7akt7o5towbbkhzs-rlzj3dxkhvon6vwt;access_token=akab-7ea2zqjjsq726chb-4lcohffx5lcedzsl;timestamp=20200806T06:23:07+0000;nonce=c92f299c-819d-4b70-bf32-f220d238efe2;
+DEBUG:akamai.edgegrid.edgegrid:signing key: BqxyAybKEnH5ryOXmLjdoUaE1iH3ccVgd093dp3gTGc=
+DEBUG:akamai.edgegrid.edgegrid:signed authorization header: EG1-HMAC-SHA256 client_token=akab-7akt7o5towbbkhzs-rlzj3dxkhvon6vwt;access_token=akab-7ea2zqjjsq726chb-4lcohffx5lcedzsl;timestamp=20200806T06:23:07+0000;nonce=c92f299c-819d-4b70-bf32-f220d238efe2;signature=ILA6gYI+OYTcJKqH+VWv3VOPe7Qq9Q5i8+C6H2QlVfw=
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): akab-dtekh7br4mq2ao5i-rawi2krrlwirkvpa.luna.akamaiapis.net:443
+send: b'GET /client-access-control/v1/configurations HTTP/1.1\r\nHost: akab-dtekh7br4mq2ao5i-rawi2krrlwirkvpa.luna.akamaiapis.net\r\nUser-Agent: AkamaiCLI\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\nAuthorization: EG1-HMAC-SHA256 client_token=akab-7akt7o5towbbkhzs-rlzj3dxkhvon6vwt;access_token=akab-7ea2zqjjsq726chb-4lcohffx5lcedzsl;timestamp=20200806T06:23:07+0000;nonce=c92f299c-819d-4b70-bf32-f220d238efe2;signature=ILA6gYI+OYTcJKqH+VWv3VOPe7Qq9Q5i8+C6H2QlVfw=\r\n\r\n'
+reply: 'HTTP/1.1 200 OK\r\n'
+DEBUG:urllib3.connectionpool:https://akab-dtekh7br4mq2ao5i-rawi2krrlwirkvpa.luna.akamaiapis.net:443 "GET /client-access-control/v1/configurations HTTP/1.1" 200 342
+header: X-Content-Type-Options header: X-XSS-Protection header: Cache-Control header: Pragma header: Expires header: X-Frame-Options header: Content-Type header: X-Trace-Id header: Content-Length header: Date header: Connection +--------------------------------+---------------------------+-------------------------------------+
+|          Config Name           |         Config Id         |             Description             |
++================================+===========================+=====================================+
+|         TestAchuth-CAC         |           4240            |              Test Cac               |
++--------------------------------+---------------------------+-------------------------------------+
+| jaytest_crlstatic.symclab.com. |           1192            |    Test config for symantec crl     |
+|              xml               |                           |                                     |
++--------------------------------+---------------------------+-------------------------------------+
 
 ```
-$ akamai image-manager --section default --policy-set example_com list-policies --network both --output-type text
 
-$ akamai image-manager --section default --policy-set example_com list-policies -n both -t text
+
+#### Usage of Get-configurations Command
+This shows how to use get particular CAC configuration detail.
 ```
-
-#### List policies on the staging network in JSON format
-
-```
-$ akamai image-manager --section default --policy-set example_com list-policies --network staging --output-type json
-```
-Saving the output in JSON format causes all the policies to be merged together on a single JSON response
-
-### Get a policy
-
-#### get-policy Help
-```
-$ akamai image-manager --section default --policy-set example_com get-policy --help
-
-usage: akamai-image-manager get-policy [-h] [--network network] [--output-file filename]
-                          name
+$ akamai cac get-configuration --h
+          [or]
+$ akamai cac get-configuration --help
+usage: akamai-cac get-configuration [-h] [--output-file file_name]
+                                    [--output-type json/text]
+                                    id
 
 positional arguments:
-  name                  Policy name to retrieve
+  id                    Config id to retrieve
 
 optional arguments:
   -h, --help            show this help message and exit
-  --network network, -n network
-                        Network to list from (staging or production). Default
-                        is production
-  --output-file filename, -f filename
+  --output-file file_name, -f file_name
                         Save output to a file
+  --output-type json/text, -t json/text
+                        Output type {json, text}. Default is text
 ```
 
-#### Get the "HeroBanner" policy (default is production)
 
+#### Get-configurations Command
+This shows how to  get particular CAC configuration Detail in text format.
 ```
-$ akamai image-manager --section default --policy-set example_com get-policy HeroBanner
-```
-
-The commands below accomplish the same as the previous one:
-
-```
-$ akamai image-manager --section default --policy-set example_com get-policy HeroBanner --network production
-
-$ akamai image-manager --section default --policy-set example_com get-policy HeroBanner -n production
-```
-#### Get the "HeroBanner" policy from staging
-
-```
-$ akamai image-manager --section default --policy-set example_com get-policy HeroBanner --network staging
+$akamai cac --section default get-configuration 4240
+Retrieving: 4240
++--------------------------------+---------------------------+-------------------------------------+-------------------------------------+
+|          Config Name           |         Config Id         |            Current CIDRs            |           Proposed CIDRs            |
++================================+===========================+=====================================+=====================================+
+|         TestAchuth-CAC         |           4240            |            ['0.0.0.0/0']            |                 {}                  |
++--------------------------------+---------------------------+-------------------------------------+-------------------------------------+-+
 ```
 
-#### Get "HeroBanner" policy from staging and save the output to a file called "rules.json"
+
+#### Get-configurations Command in Json
+This shows how to  get particular CAC configuration Detail in text format.
+```
+$akamai cac --section default get-configuration 4240 --output-type json
+Retrieving: 4240
+{
+  "configurationId": 4240,
+  "name": "TestAchuth-CAC",
+  "description": "Test Cac",
+  "currentCidrs": {
+    "cidrs": [
+      "0.0.0.0/0"
+    ],
+    "acknowledgeDate": "2020-08-04T14:04:37+0000",
+    "version": 0
+  },
+  "proposedCidrs": []
+}
 
 ```
-$ akamai image-manager --section default --policy-set example_com get-policy HeroBanner --network staging --output-file rules.json
+
+#### Get-configurations output to a text file
+This shows how to  get particular CAC configuration and output to a text file.
+```
+$akamai cac --section default get-configuration 4240 --output-file conf.txt
+Retrieving: 4240
 ```
 
-### Set a policy
-
-#### set-policy Help
+#### Acknowledge CIDRs Help
+This shows how to use Acknowledge CIDR command.
 ```
-$ akamai image-manager --section default --policy-set example_com set-policy --help
-
-usage: akamai-image-manager set-policy [-h] --input-file filename [--network network] name
+akamai cac --section default acknowledge-cidr --h
+usage: akamai-cac acknowledge-cidr [-h] [--output-type json/text]
+                                   config_id version_id
 
 positional arguments:
-  name                  Policy name to update
+  config_id             Config id to Acknowledge
+  version_id            Version id to Acknowledge
 
 optional arguments:
   -h, --help            show this help message and exit
-  --input-file filename, -f filename
-                        JSON Config file
-  --network network, -n network
-                        Network where the policy resides (staging, production
-                        or both). Default is production
+  --output-type json/text, -t json/text
+                        Output type {json, text}. Default is text
 ```
 
-#### Create (or update) a policy (default is production)
-
-Create a policy called "HeroBanner" on production as indicated on a file called rules.json
+####Acknowledge CIDRs
+This command is used to acknowlege a CIDR Block.
 ```
-$ akamai image-manager --section default --policy-set example_com set-policy HeroBanner --input-file rules.json
+$akamai cac --section default acknowledge-cidr 4240 1
+Are you sure you want to acknolwedge the cidr [yes/no]:yes
+Now Acknowleding the CIDR block
+Successfully Acknowledged
 ```
-
-The commands below accomplish the same as the previous one:
-
-```
-$ akamai image-manager --section default --policy-set example_com set-policy HeroBanner --input-file rules.json --network production
-
-$ akamai image-manager --section default --policy-set example_com set-policy HeroBanner -f rules.json --network production
-
-$ akamai image-manager --section default --policy-set example_com set-policy HeroBanner -f rules.json -n production
-
-```
-#### Create (or update) a policy on staging
-
-```
-$ akamai image-manager --section default --policy-set example_com set-policy HeroBanner --input-file rules.json --network staging
-```
-
-#### Create (or update) a policy both on staging, and production
-
-```
-$ akamai image-manager --section default --policy-set example_com set-policy HeroBanner --input-file rules.json --network both
-```
-
-### Delete a policy
-
-#### delete Help
-```
-$ akamai image-manager --section default --policy-set example_com delete-policy --help
-
-usage: akamai-image-manager delete-policy [-h] [--network network] name
-
-positional arguments:
-  name                  Policy name to delete
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --network network, -n network
-                        Network to delete from (staging, production or both).
-                        Default is production
-```
-
-#### Delete a policy (default is production)
-
-Delete a policy called "HeroBanner" on production
-```
-$ akamai image-manager --section default --policy-set example_com delete-policy HeroBanner
-```
-
-The commands below accomplish the same as the previous one:
-
-```
-$ akamai image-manager --section default --policy-set example_com delete-policy HeroBanner --network production
-
-$ akamai image-manager --section default --policy-set example_com delete-policy HeroBanner -n production
-
-```
-#### Delete a policy on staging
-
-Delete a policy called "HeroBanner" on staging
-
-```
-$ akamai image-manager --section default --policy-set example_com delete-policy HeroBanner --network staging
-```
-
-#### Delete a policy both on staging, and production
-
-```
-$ akamai image-manager --section default --policy-set example_com delete-policy HeroBanner --network both
-```
-
-## Updating
-
-To update to the latest version:
-
-```
-$ akamai update image-manager
-```
-
-## Bugs / Enhancement requests
-
-Please report any issues or enhancement ideas [here in GitHub](https://github.com/akamai/cli-image-manager/issues). Pull requests are welcomed!
-
-## Installation issues

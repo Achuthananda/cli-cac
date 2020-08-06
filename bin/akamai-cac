@@ -197,6 +197,10 @@ def main():
             if decision == "yes" or decision == 'y':
                 print("Now Acknowleding the CIDR block")
                 ackdetail = acknowledgeCidr(config.config_id,config.version_id)
+                if ackdetail['status'] == 200:
+                    print('Successfully Acknowledged')
+                else:
+                    print('There is a failure in acknowledging.')
                 break
             elif decision == 'no' or decision == 'n':
                 print("Aborting the acknowledgement")
