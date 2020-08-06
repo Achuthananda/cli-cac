@@ -193,7 +193,7 @@ def main():
         #Please ask for acknowledgement.
         i = 1
         while i < 2:
-            decision = raw_input("Are you sure you want to acknolwedge the cidr [yes/no]:")
+            decision = input("Are you sure you want to acknolwedge the cidr [yes/no]:")
             if decision == "yes" or decision == 'y':
                 print("Now Acknowleding the CIDR block")
                 ackdetail = acknowledgeCidr(config.config_id,config.version_id)
