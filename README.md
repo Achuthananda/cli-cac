@@ -20,7 +20,7 @@ and compiling it yourself.
 ## Usage
 
 ```
-akamai cac [global flags] Commands
+$akamai cac [global flags] Commands
 ```
 
 ## Global Flags
